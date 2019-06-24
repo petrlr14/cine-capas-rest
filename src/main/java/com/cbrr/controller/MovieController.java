@@ -7,14 +7,13 @@ import com.cbrr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(path = {"/movie"})
-public class MovieController {
+public class MovieController{
 
     @Autowired
     MovieService movieService;
@@ -26,10 +25,9 @@ public class MovieController {
         return movieService.getAll();
     }
 
-    @GetMapping(path={"/movie/one/", "/movie/one"}, params = {"id"}, produces = "application/json")
-    public BaseResponse getMovieById(@RequestParam Long id){
+    @GetMapping(path={"/one/", "/one"}, params = {"id"}, produces = "application/json")
+    public BaseResponse getMovieById(Long id) {
         Movie movie=movieService.findById(id);
         return movie==null?new BaseResponse():movie;
     }
-
 }

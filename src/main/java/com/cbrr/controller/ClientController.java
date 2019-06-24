@@ -27,6 +27,7 @@ public class ClientController {
 
     @PostMapping(path = {"/reservation", "/reservation/"})
     public ResponseEntity reserva(@RequestBody ReservationForm reservationForm){
+        System.out.println(reservationForm.toString());
         return null;
     }
 

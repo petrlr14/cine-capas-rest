@@ -68,9 +68,9 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         if (hasRoles("ADM")) {
-            grantedAuthorities.add(new SimpleGrantedAuthority("ADM"));
+            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADM"));
         } else {
-            grantedAuthorities.add(new SimpleGrantedAuthority("CLI"));
+            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_CLI"));
         }
         return grantedAuthorities;
     }

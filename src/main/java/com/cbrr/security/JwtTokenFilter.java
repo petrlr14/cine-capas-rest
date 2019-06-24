@@ -15,7 +15,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtTokenFilter extends GenericFilterBean {
 
-    private com.cbrr.security.JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)

@@ -2,13 +2,19 @@ package com.cbrr.controller;
 
 import com.cbrr.domain.Movie;
 import com.cbrr.domain.User;
+import com.cbrr.responses.BaseResponse;
+import com.cbrr.responses.auth.LogoutResponse;
 import com.cbrr.responses.movie.PersistMovie;
+import com.cbrr.responses.token.BadToken;
+import com.cbrr.security.JwtTokenProvider;
 import com.cbrr.service.movie.MovieService;
 import com.cbrr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(path = "/admin", produces = "application/json")
@@ -18,11 +24,20 @@ public class AdminController {
     MovieService movieService;
     @Autowired
     UserService userService;
+    @Autowired
+    JwtTokenProvider tokenProvider;
 
         /*Movie*/
 
     @PostMapping(path = {"/movie/create", "/movie/create/"})
-    public ResponseEntity createMovie(@RequestBody Movie movie){
+    public ResponseEntity createMovie(@RequestBody Movie movie, HttpServletRequest request){
+        String token = tokenProvider.resolveToken(request);
+        if (token == null) {
+            return new ResponseEntity<>(new BadToken(HttpStatus.BAD_REQUEST, "Debes enviar un token"), HttpStatus.BAD_REQUEST);
+        }
+        if(!tokenProvider.validateToken(token)){
+            return new ResponseEntity<>(new BadToken(HttpStatus.BAD_REQUEST, "Debes enviar un token valido"), HttpStatus.BAD_REQUEST);
+        }
         User createdBy = userService.getUserById(movie.getCreatedByUserID());
         User modifiedBy = userService.getUserById(movie.getModifiedByUserID());
         movie.setCreatedByUser(createdBy);
