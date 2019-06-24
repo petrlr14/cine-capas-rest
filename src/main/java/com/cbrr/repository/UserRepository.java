@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Procedure(name = "logOutUser")
     Integer logOutUser(@Param("_user_name") String username);
 
-    public User findByUsernameAndPassWord(String username, String password);
-    public User findByUsername(String username);
+    User findByUsernameAndPassWord(String username, String password);
+    User findByUsername(String username);
 
 }

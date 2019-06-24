@@ -45,7 +45,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        User user = userRepository.findByUsername(getUsername(token));
+        User user=userRepository.findByUsername(getUsername(token));
         String roles = (String) getBody(token).get("roles");
         List<GrantedAuthority> grantedAuths = AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
         return new UsernamePasswordAuthenticationToken(user, "", grantedAuths);

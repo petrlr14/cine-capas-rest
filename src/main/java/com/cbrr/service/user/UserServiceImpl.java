@@ -1,18 +1,19 @@
-package com.cbrr.service.login;
+package com.cbrr.service.user;
 
 import com.cbrr.domain.User;
 import com.cbrr.repository.UserRepository;
 import com.cbrr.responses.auth.LoginResponse;
+import com.cbrr.responses.auth.LogoutResponse;
 import com.cbrr.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
-public class LoginServiceImpl implements LoginService {
+public class UserServiceImpl implements UserService{
 
     @Autowired
     UserRepository userRepository;
@@ -20,6 +21,20 @@ public class LoginServiceImpl implements LoginService {
     BCryptPasswordEncoder passwordEncoder;
     @Autowired
     JwtTokenProvider tokenProvider;
+
+    @Override
+    public LogoutResponse performLogout(HttpServletRequest request) {
+        String token = tokenProvider.resolveToken(request);
+        if (token == null) {
+            return new LogoutResponse(HttpStatus.BAD_REQUEST, "Necesitas un token para realizar esta operación");
+        }
+        String username = tokenProvider.getUsername(token);
+        if (username != null) {
+            userRepository.logOutUser(username);
+            return new LogoutResponse(HttpStatus.OK, "Bye");
+        }
+        return new LogoutResponse(HttpStatus.BAD_REQUEST, "Token invalido");
+    }
 
     @Override
     public LoginResponse performLogin(String username, String password) {
@@ -50,7 +65,8 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+    public User getUserById(Long ID) {
+        return userRepository.findById(ID).orElse(null);
     }
+
 }

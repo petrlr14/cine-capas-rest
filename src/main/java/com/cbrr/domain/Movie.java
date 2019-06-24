@@ -1,5 +1,6 @@
 package com.cbrr.domain;
 
+import com.cbrr.responses.BaseResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "movie", schema = "public")
-public class Movie {
+public class Movie  extends BaseResponse {
 
     @Id
     @GeneratedValue(generator = "movie_movie_id_seq", strategy = GenerationType.AUTO)
@@ -24,13 +25,13 @@ public class Movie {
     @JoinColumn(name = "created_by_user", referencedColumnName = "user_id")
     private User createdByUser;
     @Transient
-    private Integer createdByUserID;
+    private Long createdByUserID;
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "modified_by_user", referencedColumnName = "user_id")
     private User modifiedByUser;
     @Transient
-    private Integer modifiedByUserID;
+    private Long modifiedByUserID;
     @Column(name = "movie_name")
     private String movieName;
     @Column(name = "movie_poster")
