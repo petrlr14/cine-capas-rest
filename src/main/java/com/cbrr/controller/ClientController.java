@@ -2,6 +2,7 @@ package com.cbrr.controller;
 
 import com.cbrr.domain.Movie;
 import com.cbrr.domain.User;
+import com.cbrr.request.ReservationForm;
 import com.cbrr.responses.BaseResponse;
 import com.cbrr.responses.movie.PersistMovie;
 import com.cbrr.service.movie.MovieService;
@@ -24,6 +25,10 @@ public class ClientController {
 
     /*Movie*/
 
+    @PostMapping(path = {"/reservation", "/reservation/"})
+    public ResponseEntity reserva(@RequestBody ReservationForm reservationForm){
+        return null;
+    }
 
 
 }
