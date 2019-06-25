@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 @Configuration
@@ -34,7 +36,7 @@ public class JPAConfiguration {
     }
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource()  {
         DriverManagerDataSource dataSource=new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl("jdbc:postgresql://ec2-23-21-129-125.compute-1.amazonaws.com:5432/d2m0qe0itk27ja?sslmode=require");
