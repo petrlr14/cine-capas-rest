@@ -2,10 +2,7 @@ package com.cbrr.controller;
 
 import com.cbrr.domain.Movie;
 import com.cbrr.domain.User;
-import com.cbrr.responses.BaseResponse;
-import com.cbrr.responses.auth.LogoutResponse;
 import com.cbrr.responses.movie.PersistMovie;
-import com.cbrr.responses.token.BadToken;
 import com.cbrr.security.JwtTokenProvider;
 import com.cbrr.service.movie.MovieService;
 import com.cbrr.service.user.UserService;
@@ -18,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(path = "/admin", produces = "application/json")
-public class AdminController {
+public class AdminController extends BaseController{
 
     @Autowired
     MovieService movieService;
@@ -29,14 +26,10 @@ public class AdminController {
 
         /*Movie*/
 
-    @PostMapping(path = {"/movie/create", "/movie/create/"})
+    @PostMapping(path = {"/movie/create/", "/movie/create"})
     public ResponseEntity createMovie(@RequestBody Movie movie, HttpServletRequest request){
-        String token = tokenProvider.resolveToken(request);
-        if (token == null) {
-            return new ResponseEntity<>(new BadToken(HttpStatus.BAD_REQUEST, "Debes enviar un token"), HttpStatus.BAD_REQUEST);
-        }
-        if(!tokenProvider.validateToken(token)){
-            return new ResponseEntity<>(new BadToken(HttpStatus.BAD_REQUEST, "Debes enviar un token valido"), HttpStatus.BAD_REQUEST);
+        if(this.verifyToken(request, tokenProvider)!=null){
+            return verifyToken(request, tokenProvider);
         }
         User createdBy = userService.getUserById(movie.getCreatedByUserID());
         User modifiedBy = userService.getUserById(movie.getModifiedByUserID());
@@ -57,7 +50,10 @@ public class AdminController {
     }
 
     @PutMapping(path = {"/movie/edit/", "/movie/edit"})
-    public ResponseEntity updateMovie(@RequestBody Movie movie){
+    public ResponseEntity updateMovie(@RequestBody Movie movie, HttpServletRequest request){
+        if(this.verifyToken(request, tokenProvider)!=null){
+            return verifyToken(request, tokenProvider);
+        }
         User createdBy = userService.getUserById(movie.getCreatedByUserID());
         User modifiedBy = userService.getUserById(movie.getModifiedByUserID());
         movie.setCreatedByUser(createdBy);
@@ -83,7 +79,10 @@ public class AdminController {
     }
 
     @DeleteMapping(path = {"/movie/delete/", "/movie/delete"})
-    public ResponseEntity deleteMovie(@RequestParam("id") Long id){
+    public ResponseEntity deleteMovie(@RequestParam("id") Long id, HttpServletRequest request){
+        if(this.verifyToken(request, tokenProvider)!=null){
+            return verifyToken(request, tokenProvider);
+        }
         movieService.delete(id);
         return new ResponseEntity<>(new PersistMovie(HttpStatus.ACCEPTED, "borrado"), HttpStatus.ACCEPTED);
     }
