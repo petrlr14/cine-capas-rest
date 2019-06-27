@@ -22,7 +22,7 @@ public class State {
     private String stateName;
     @Column(name = "state_ak")
     private String stateAk;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
     private Country countryId;
 

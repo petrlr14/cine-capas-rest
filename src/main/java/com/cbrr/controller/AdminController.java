@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/admin", produces = "application/json")
+@CrossOrigin(origins = "*")
 public class AdminController extends BaseController{
 
     @Autowired
@@ -85,6 +87,11 @@ public class AdminController extends BaseController{
         }
         movieService.delete(id);
         return new ResponseEntity<>(new PersistMovie(HttpStatus.ACCEPTED, "borrado"), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping(path = {"/user/", "/user"})
+    public List<User> getAllUsers(){
+        return userService.getAllByRol();
     }
 
 }

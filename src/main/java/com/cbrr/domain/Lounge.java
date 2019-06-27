@@ -12,30 +12,29 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "schedule", schema = "public")
-public class Schedule {
-
+@Table(schema = "public", name = "lounge")
+public class Lounge {
     @Id
-    @GeneratedValue(generator = "schedule_schedule_id_seq", strategy = GenerationType.AUTO)
-    @SequenceGenerator(name = "schedule_schedule_id_seq", sequenceName = "public.schedule_schedule_id_seq", allocationSize = 1)
-    @Column(name = "schedule_id")
-    private Long movieId;
+    @GeneratedValue(generator = "lounge_lounge_id_seq", strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "lounge_lounge_id_seq", sequenceName = "public.lounge_lounge_id_seq", allocationSize = 1)
+    @Column(name = "lounge_id")
+    private Long loungeId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "created_by_user")
     @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "created_by_user", referencedColumnName = "user_id")
     private User createdByUser;
     @Transient
     @Getter(AccessLevel.NONE)
     private Long createdByUserID;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "modified_by_user")
     @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "modified_by_user", referencedColumnName = "user_id")
     private User modifiedByUser;
     @Transient
     @Getter(AccessLevel.NONE)
     private Long modifiedByUserID;
-    @Column(name = "schedule")
-    private String schedule;
+    @Column(name = "lounge_capacity")
+    private Integer capacity;
 
     public Long getCreatedByUserID() {
         return this.getCreatedByUser().getUserId();
@@ -44,4 +43,5 @@ public class Schedule {
     public Long getModifiedByUserID(){
         return this.getModifiedByUser().getUserId();
     }
+
 }

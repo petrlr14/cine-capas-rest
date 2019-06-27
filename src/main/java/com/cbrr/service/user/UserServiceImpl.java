@@ -1,6 +1,8 @@
 package com.cbrr.service.user;
 
+import com.cbrr.domain.Rol;
 import com.cbrr.domain.User;
+import com.cbrr.repository.RolRepository;
 import com.cbrr.repository.UserRepository;
 import com.cbrr.responses.auth.LoginResponse;
 import com.cbrr.responses.auth.LogoutResponse;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService{
@@ -24,6 +27,8 @@ public class UserServiceImpl implements UserDetailsService, UserService{
     BCryptPasswordEncoder passwordEncoder;
     @Autowired
     JwtTokenProvider tokenProvider;
+    @Autowired
+    RolRepository rolRepository;
 
     @Override
     public LogoutResponse performLogout(HttpServletRequest request) {
@@ -46,7 +51,7 @@ public class UserServiceImpl implements UserDetailsService, UserService{
             if (user.getUserState()) {
                 userRepository.loginUser(Integer.parseInt(user.getUserId() + ""));
                 String token = tokenProvider.createToken(user);
-                return new LoginResponse(HttpStatus.OK, "", token);
+                return new LoginResponse(HttpStatus.OK, "", token, user);
             } else {
                 StringBuilder str = new StringBuilder();
                 if (user.getUserBlockedState()) {
@@ -60,16 +65,26 @@ public class UserServiceImpl implements UserDetailsService, UserService{
                     }
                 }
 
-                return new LoginResponse(HttpStatus.FORBIDDEN, str.toString(), "");
+                return new LoginResponse(HttpStatus.FORBIDDEN, str.toString(), "", null);
             }
         } else {
-            return new LoginResponse(HttpStatus.UNAUTHORIZED, "Credenciales inválidas", "");
+            return new LoginResponse(HttpStatus.UNAUTHORIZED, "Credenciales inválidas", "", null);
         }
     }
 
     @Override
     public User getUserById(Long ID) {
         return userRepository.findById(ID).orElse(null);
+    }
+
+    @Override
+    public List<User> getAllByRol() {
+        return userRepository.findAllByRolId(rolRepository.getRolByRolAk("CLI"));
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 
     @Override

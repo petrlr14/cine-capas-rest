@@ -5,14 +5,13 @@ import com.cbrr.responses.BaseResponse;
 import com.cbrr.service.movie.MovieService;
 import com.cbrr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(path = {"/movie"})
+@CrossOrigin(origins = "*")
 public class MovieController{
 
     @Autowired
@@ -26,7 +25,7 @@ public class MovieController{
     }
 
     @GetMapping(path={"/one/", "/one"}, params = {"id"}, produces = "application/json")
-    public BaseResponse getMovieById(Long id) {
+    public BaseResponse getMovieById(@RequestParam Long id) {
         Movie movie=movieService.findById(id);
         return movie==null?new BaseResponse():movie;
     }

@@ -31,8 +31,9 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    @Value("${security.jwt.token.expire-length:3600000}")
-    private long validityInMilliseconds = 3600000;
+    @Value("${security.jwt.token.expire-length:9223372036854775807}")
+    private long validityInMilliseconds = Long.MAX_VALUE;
+
 
     public String createToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());

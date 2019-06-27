@@ -1,6 +1,7 @@
 package com.cbrr.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,16 +26,23 @@ public class MovieFormat {
     @JoinColumn(name = "created_by_user", referencedColumnName = "user_id")
     private User createdByUser;
     @Transient
-    private Long createdByUserID;
+    @Getter(value = AccessLevel.NONE) private Long createdByUserID;
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "modified_by_user", referencedColumnName = "user_id")
     private User modifiedByUser;
     @Transient
-    private Long modifiedByUserID;
+    @Getter(value = AccessLevel.NONE) private Long modifiedByUserID;
     @Column(name = "format_ak")
     private String formatAk;
     @Column(name = "price")
     private BigDecimal price;
 
+    public Long getCreatedByUserID() {
+        return this.getCreatedByUser().getUserId();
+    }
+
+    public Long getModifiedByUserID(){
+        return this.getModifiedByUser().getUserId();
+    }
 }

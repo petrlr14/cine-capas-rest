@@ -18,7 +18,7 @@ public class Province {
     @SequenceGenerator(name = "province_province_id_seq", sequenceName = "public.province_province_id_seq", allocationSize = 1)
     @Column(name = "province_id")
     private Long provinceId;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "state_id")
     private State stateId;
     @Column(name = "province_name")

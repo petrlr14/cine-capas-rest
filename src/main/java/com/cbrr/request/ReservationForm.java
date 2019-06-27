@@ -14,7 +14,6 @@ public class ReservationForm {
     private Long movieId;
     private Long scheduleId;
     private Long movieFormatId;
-    private Long userId;
     private Integer seats;
     private BigDecimal amount;
 
