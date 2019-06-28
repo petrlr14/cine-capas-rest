@@ -11,6 +11,7 @@ class LoginResponse {
 
     private HttpStatus code;
     private String msg;
+    private String header;
     private String token;
     private User user;
 }

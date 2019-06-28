@@ -1,6 +1,5 @@
 package com.cbrr.service.user;
 
-import com.cbrr.domain.Rol;
 import com.cbrr.domain.User;
 import com.cbrr.repository.RolRepository;
 import com.cbrr.repository.UserRepository;
@@ -16,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -46,29 +46,33 @@ public class UserServiceImpl implements UserDetailsService, UserService{
 
     @Override
     public LoginResponse performLogin(String username, String password) {
-        User user = userRepository.findByUsernameAndPassWord(username, password/* passwordEncoder.encode(password) */);
+        User user = userRepository.findByUsernameAndPassWord(username,  password);
         if (user != null) {
             if (user.getUserState()) {
                 userRepository.loginUser(Integer.parseInt(user.getUserId() + ""));
                 String token = tokenProvider.createToken(user);
-                return new LoginResponse(HttpStatus.OK, "", token, user);
+                return new LoginResponse(HttpStatus.OK, "", "", token, user);
             } else {
-                StringBuilder str = new StringBuilder();
+                StringBuilder strMsg = new StringBuilder();
+                StringBuilder strHeader = new StringBuilder();
                 if (user.getUserBlockedState()) {
-                    str.append(user.getBlockCause());
+                    strMsg.append(user.getBlockCause());
+                    strHeader.append("Cuenta bloquead");
                 } else {
                     if (user.getUserLogged()) {
-                        str.append(
+                        strMsg.append(
                                 "Tienes sesión Activa en otro navegador. Solo pueder tener una sesión activa a la vez.");
+                        strHeader.append("Sesion doble");
                     } else {
-                        str.append("Tu cuenta aún no ha sido verificada");
+                        strMsg.append("Tu cuenta aún no ha sido por un administrador");
+                        strHeader.append("Cuenta sin verifcar");
                     }
                 }
 
-                return new LoginResponse(HttpStatus.FORBIDDEN, str.toString(), "", null);
+                return new LoginResponse(HttpStatus.FORBIDDEN, strMsg.toString(), strHeader.toString(), "", null);
             }
         } else {
-            return new LoginResponse(HttpStatus.UNAUTHORIZED, "Credenciales inválidas", "", null);
+            return new LoginResponse(HttpStatus.UNAUTHORIZED, "La conbinacion de usuario y contraseña no es correcta", "Credenciales inválidas",  "", null);
         }
     }
 
@@ -85,6 +89,26 @@ public class UserServiceImpl implements UserDetailsService, UserService{
     @Override
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Integer deactivateUser(int userId, String cause) {
+        return userRepository.deactivateUser(userId, cause);
+    }
+
+    @Override
+    public Integer activeUser(int userId) {
+        return userRepository.activeUser(userId);
+    }
+
+    @Override
+    public User findUserByUsernameAndPassword(String username, String password) {
+        return userRepository.findByUsernameAndPassWord(username, password);
+    }
+
+    @Override
+    public Integer register(String fname, String lname, String username, String password, Date bday, String address, String contry, String state, String province) {
+        return userRepository.register(fname, lname, username, password, bday, address, contry, state, province);
     }
 
     @Override

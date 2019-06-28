@@ -12,9 +12,11 @@ import java.math.BigDecimal;
 public class ReservationForm {
 
     private Long movieId;
-    private Long scheduleId;
-    private Long movieFormatId;
+    private String scheduleAk;
+    private String movieFormatAk;
     private Integer seats;
-    private BigDecimal amount;
+    private Double subtotal;
+    private Double saldoRemanente;
+    private Double grandTotal;
 
 }

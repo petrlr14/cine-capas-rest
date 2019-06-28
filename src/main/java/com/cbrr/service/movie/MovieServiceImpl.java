@@ -18,8 +18,16 @@ public class MovieServiceImpl implements MovieService {
     MovieRepository movieRepository;
 
     @Override
+    public List<Movie> getAllActive() {
+        return movieRepository.findAllByActiveTrue().stream().peek((item) -> {
+            item.setCreatedByUserID(item.getCreatedByUser().getUserId());
+            item.setModifiedByUserID(item.getModifiedByUser().getUserId());
+        }).collect(Collectors.toList());
+    }
+
+    @Override
     public List<Movie> getAll() {
-        return movieRepository.findAll().stream().peek((item)->{
+        return movieRepository.findAll().stream().peek((item) -> {
             item.setCreatedByUserID(item.getCreatedByUser().getUserId());
             item.setModifiedByUserID(item.getModifiedByUser().getUserId());
         }).collect(Collectors.toList());
@@ -27,9 +35,9 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie findById(Long id) {
-        Optional<Movie> op=movieRepository.findById(id);
-        Movie movie=op.orElse(null);
-        if (movie!=null) {
+        Optional<Movie> op = movieRepository.findById(id);
+        Movie movie = op.orElse(null);
+        if (movie != null) {
             movie.setCreatedByUserID(movie.getCreatedByUser().getUserId());
             movie.setModifiedByUserID(movie.getModifiedByUser().getUserId());
         }
@@ -38,13 +46,13 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public Movie persist(Movie movie) throws DataAccessException{
+    public Movie persist(Movie movie) throws DataAccessException {
         return movieRepository.save(movie);
     }
 
     @Override
     @Transactional
-    public void delete(Long id) throws DataAccessException{
+    public void delete(Long id) throws DataAccessException {
         movieRepository.deleteById(id);
     }
 

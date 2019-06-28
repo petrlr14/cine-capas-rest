@@ -1,5 +1,6 @@
 package com.cbrr.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class State {
     private String stateName;
     @Column(name = "state_ak")
     private String stateAk;
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
     private Country countryId;

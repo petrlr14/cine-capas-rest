@@ -24,6 +24,11 @@ public class MovieController{
         return movieService.getAll();
     }
 
+    @GetMapping(path={"/active", "active"})
+    public List<Movie> getAllMoviesActive(){
+        return movieService.getAllActive();
+    }
+
     @GetMapping(path={"/one/", "/one"}, params = {"id"}, produces = "application/json")
     public BaseResponse getMovieById(@RequestParam Long id) {
         Movie movie=movieService.findById(id);

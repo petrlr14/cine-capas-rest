@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/admin", produces = "application/json")
 @CrossOrigin(origins = "*")
-public class AdminController extends BaseController{
+public class AdminController extends BaseController {
 
     @Autowired
     MovieService movieService;
@@ -26,24 +26,24 @@ public class AdminController extends BaseController{
     @Autowired
     JwtTokenProvider tokenProvider;
 
-        /*Movie*/
+    /*Movie*/
 
     @PostMapping(path = {"/movie/create/", "/movie/create"})
-    public ResponseEntity createMovie(@RequestBody Movie movie, HttpServletRequest request){
-        if(this.verifyToken(request, tokenProvider)!=null){
+    public ResponseEntity createMovie(@RequestBody Movie movie, HttpServletRequest request) {
+        if (this.verifyToken(request, tokenProvider) != null) {
             return verifyToken(request, tokenProvider);
         }
         User createdBy = userService.getUserById(movie.getCreatedByUserID());
         User modifiedBy = userService.getUserById(movie.getModifiedByUserID());
         movie.setCreatedByUser(createdBy);
         movie.setModifiedByUser(modifiedBy);
-        Movie movie1=movieService.persist(movie);
-        if (movie1==null) {
+        Movie movie1 = movieService.persist(movie);
+        if (movie1 == null) {
             return new ResponseEntity<>(
                     new PersistMovie(HttpStatus.INTERNAL_SERVER_ERROR, "No se pudo crear la pelicula"),
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
-        }else{
+        } else {
             return new ResponseEntity<>(
                     new PersistMovie(HttpStatus.CREATED, "Pelicula creada exitosamente"),
                     HttpStatus.CREATED
@@ -52,26 +52,26 @@ public class AdminController extends BaseController{
     }
 
     @PutMapping(path = {"/movie/edit/", "/movie/edit"})
-    public ResponseEntity updateMovie(@RequestBody Movie movie, HttpServletRequest request){
-        if(this.verifyToken(request, tokenProvider)!=null){
+    public ResponseEntity updateMovie(@RequestBody Movie movie, HttpServletRequest request) {
+        if (this.verifyToken(request, tokenProvider) != null) {
             return verifyToken(request, tokenProvider);
         }
         User createdBy = userService.getUserById(movie.getCreatedByUserID());
         User modifiedBy = userService.getUserById(movie.getModifiedByUserID());
         movie.setCreatedByUser(createdBy);
         movie.setModifiedByUser(modifiedBy);
-        Movie movie1=movieService.persist(movie);
-        if (movie1==null) {
+        Movie movie1 = movieService.persist(movie);
+        if (movie1 == null) {
             return new ResponseEntity<>(
                     new PersistMovie(HttpStatus.INTERNAL_SERVER_ERROR, "No se pudo realizar la modificacion"),
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
-        }else{
+        } else {
             String str;
-            if(movie.getMovieId()!=null){
-                str="La pelicula se modifico correctamente";
-            }else{
-                str="La pelicula se creo correctamente";
+            if (movie.getMovieId() != null) {
+                str = "La pelicula se modifico correctamente";
+            } else {
+                str = "La pelicula se creo correctamente";
             }
             return new ResponseEntity<>(
                     new PersistMovie(HttpStatus.OK, str),
@@ -81,8 +81,8 @@ public class AdminController extends BaseController{
     }
 
     @DeleteMapping(path = {"/movie/delete/", "/movie/delete"})
-    public ResponseEntity deleteMovie(@RequestParam("id") Long id, HttpServletRequest request){
-        if(this.verifyToken(request, tokenProvider)!=null){
+    public ResponseEntity deleteMovie(@RequestParam("id") Long id, HttpServletRequest request) {
+        if (this.verifyToken(request, tokenProvider) != null) {
             return verifyToken(request, tokenProvider);
         }
         movieService.delete(id);
@@ -90,8 +90,20 @@ public class AdminController extends BaseController{
     }
 
     @GetMapping(path = {"/user/", "/user"})
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userService.getAllByRol();
+    }
+
+    @PostMapping(path = {"/activate/", "/activate"})
+    public ResponseEntity acitvateUser(@RequestParam Integer id) {
+        userService.activeUser(id);
+        return new ResponseEntity<>(userService.getUserById(Long.parseLong(id + "")), HttpStatus.OK);
+    }
+
+    @PostMapping(path = {"/deactivate/", "/deactivate"})
+    public ResponseEntity deactivateUser(@RequestParam Integer id, @RequestParam String cause) {
+        userService.deactivateUser(id, cause);
+        return new ResponseEntity<>(userService.getUserById(Long.parseLong(id + "")), HttpStatus.OK);
     }
 
 }

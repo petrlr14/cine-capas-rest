@@ -60,6 +60,7 @@ public class User implements UserDetails {
     @JsonProperty("birthday")
     private String birthDay;
     private String username;
+    @JsonIgnore
     @Column(name = "pass_word")
     private String passWord;
     private String address;

@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface MovieService {
 
+    List<Movie> getAllActive();
+
     List<Movie> getAll();
 
     Movie findById(Long id);

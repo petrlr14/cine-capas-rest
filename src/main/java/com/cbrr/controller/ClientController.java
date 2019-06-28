@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping(value = "/client", produces = "application/json")
 @CrossOrigin(origins = "*")
-public class ClientController extends BaseController{
+public class ClientController extends BaseController {
 
     @Autowired
     MovieService movieService;
@@ -26,10 +26,7 @@ public class ClientController extends BaseController{
     /*Movie*/
 
     @PostMapping(path = {"/reservation", "/reservation/"})
-    public ResponseEntity reserva(@RequestBody ReservationForm reservationForm, HttpServletRequest request){
-        if(this.verifyToken(request, tokenProvider)==null){
-            return verifyToken(request, tokenProvider);
-        }
+    public ResponseEntity reserva(@RequestBody ReservationForm reservationForm, HttpServletRequest request) {
         System.out.println(reservationForm.toString());
         return null;
     }
@@ -38,12 +35,12 @@ public class ClientController extends BaseController{
     public ResponseEntity get*/
 
     @GetMapping(path = {"/get-info", "/get-info/"})
-    public ResponseEntity getUserInfo(HttpServletRequest request){
-        if(this.verifyToken(request, tokenProvider)==null){
+    public ResponseEntity getUserInfo(HttpServletRequest request) {
+        if (this.verifyToken(request, tokenProvider) == null) {
             return verifyToken(request, tokenProvider);
         }
-        String username=this.tokenProvider.getUsername(this.tokenProvider.resolveToken(request));
-        User user=(User) userService.loadUserByUsername(username);
+        String username = this.tokenProvider.getUsername(this.tokenProvider.resolveToken(request));
+        User user = (User) userService.loadUserByUsername(username);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
